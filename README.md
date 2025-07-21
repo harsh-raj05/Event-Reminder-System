@@ -7,10 +7,12 @@ with descriptions and status tracking. This project demonstrates object-oriented
 
 ## 🚀 Features
 
+- Console-based application
 - Add new events with name, date, description, and status
 - View all events
 - Mark events as completed
 - Remove past/completed events
 - View completed events separately
+- File to save and retrieve event status.
 
 ---
