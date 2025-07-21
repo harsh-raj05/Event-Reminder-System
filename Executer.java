@@ -1,10 +1,12 @@
 // Executer.java
-import java.util.Scanner;
+import java.util.*;
+
 
 public class Executer{
     public static void main(String[] args){
         Scanner sc=new Scanner(System.in);
         reminderManager manager=new reminderManager();
+        manager.loadFromFile("events.csv");
         int choice;
 
         do {
@@ -16,7 +18,7 @@ public class Executer{
             System.out.println("5. View Completed Events");
             System.out.println("6. Update Event Status");
             System.out.println("7. Remove Event");
-            System.out.println("8. Exit");
+            System.out.println("8. Exit and save the file");
             System.out.print("Enter your choice: ");
             choice = sc.nextInt();
             sc.nextLine(); 
@@ -75,6 +77,7 @@ public class Executer{
                     break;
 
                 case 8:
+                    manager.saveToFile("events.csv");
                     System.out.println("Exiting Event Reminder System.");
                     break;
 

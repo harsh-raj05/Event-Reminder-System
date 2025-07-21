@@ -1,4 +1,9 @@
 // ReminderManager.java
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 
 public class reminderManager{
@@ -86,4 +91,33 @@ public class reminderManager{
             System.out.println("Invalid event number.");
         }
     }
+
+    public void loadFromFile(String filename){
+        try (BufferedReader br=new BufferedReader(new FileReader(filename))){
+            String line;
+            while ((line=br.readLine())!=null){
+                String[] parts=line.split(",",-1);
+                if (parts.length==5){
+                    Event e=new Event(parts[0],parts[1],parts[2],parts[3]);
+                    e.setStatus(parts[4]);
+                    eventList.add(e);
+                }
+            }
+            System.out.println("Events loaded from file.");
+        } catch (IOException e){
+            System.out.println("No saved events found.");
+        }
+    }
+
+    public void saveToFile(String filename){
+        try (PrintWriter pw=new PrintWriter(new FileWriter(filename))){
+            for (Event e:eventList){
+                pw.println(e.getTitle()+","+e.getDescription()+","+e.getDate()+","+e.getTime()+","+e.getStatus());
+            }
+            System.out.println("Events saved to file.");
+        } catch (IOException e){
+            System.out.println("Error saving events.");
+        }
+    }
+
 }
