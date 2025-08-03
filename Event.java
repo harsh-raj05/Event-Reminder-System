@@ -4,14 +4,16 @@ public class Event{
     private String description;
     private String date; 
     private String time; 
-    private String status; 
+    private String status;
+    private int reminderOffset; 
 
-    public Event(String title,String description,String date,String time){
+    public Event(String title,String description,String date,String time,int reminderOffset){
         this.title=title;
         this.description=description;
         this.date=date;
         this.time=time;
         this.status="Pending";
+        this.reminderOffset = reminderOffset;
     }
 
     public String getTitle(){
@@ -40,6 +42,14 @@ public class Event{
 
     public void markAsCompleted(){
         this.status="Completed";
+    }
+
+    public int getReminderOffset() {
+    return reminderOffset;
+}
+
+    public void setReminderOffset(int reminderOffset) {
+        this.reminderOffset = reminderOffset;
     }
 
     public void displayEvent(){

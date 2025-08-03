@@ -11,6 +11,8 @@ public class EventReminderGUI extends JFrame {
         manager = new ReminderManager();
         manager.loadFromFile("events.csv");
 
+        startReminderThread();
+
         setTitle("Event Reminder System");
         setSize(800, 400);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -46,6 +48,34 @@ public class EventReminderGUI extends JFrame {
         add(scrollPane, BorderLayout.CENTER);
         add(buttonPanel, BorderLayout.SOUTH);
     }
+    private void startReminderThread() {
+        Timer timer = new Timer(60000, e -> checkReminders()); 
+        timer.start();
+    }
+
+    private void checkReminders() {
+        for (Event event : manager.eventList) {
+            if (!event.getStatus().equalsIgnoreCase("Pending")) continue;
+
+            try {
+                java.time.LocalDate eventDate = java.time.LocalDate.parse(event.getDate());
+                java.time.LocalDate reminderDate = eventDate.minusDays(event.getReminderOffset());
+                java.time.LocalDate currentDate = java.time.LocalDate.now();
+
+                if (currentDate.equals(reminderDate)) {
+                    SwingUtilities.invokeLater(() -> {
+                        JOptionPane.showMessageDialog(this,
+                            "Reminder: " + event.getTitle() + "\nDate: " + event.getDate() + "\nTime: " + event.getTime(),
+                            "Event Reminder",
+                            JOptionPane.INFORMATION_MESSAGE);
+                    });
+                }
+            } catch (Exception ex) {
+                System.out.println("Error parsing date: " + ex.getMessage());
+            }
+        }
+    }
+
 
     private void loadEventsIntoTable() {
         tableModel.setRowCount(0);
@@ -59,6 +89,7 @@ public class EventReminderGUI extends JFrame {
         JTextField descField = new JTextField();
         JTextField dateField = new JTextField();
         JTextField timeField = new JTextField();
+        JTextField reminderField = new JTextField();  
 
         JPanel panel = new JPanel(new GridLayout(0, 1));
         panel.add(new JLabel("Title:"));
@@ -69,14 +100,30 @@ public class EventReminderGUI extends JFrame {
         panel.add(dateField);
         panel.add(new JLabel("Time (HH:MM):"));
         panel.add(timeField);
+        panel.add(new JLabel("Remind before how many days?")); 
+        panel.add(reminderField);  
 
         int result = JOptionPane.showConfirmDialog(this, panel, "Add Event", JOptionPane.OK_CANCEL_OPTION);
 
         if (result == JOptionPane.OK_OPTION) {
-            manager.addEvent(titleField.getText(), descField.getText(), dateField.getText(), timeField.getText());
-            loadEventsIntoTable();
+            int offset = 0;
+            try {
+                offset = Integer.parseInt(reminderField.getText());  
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(this, "Invalid number for reminder. Setting to 0.");
+            }
+
+            manager.addEvent(
+                titleField.getText(),
+                descField.getText(),
+                dateField.getText(),
+                timeField.getText(),
+                offset
+            );
+            loadEventsIntoTable(); 
         }
     }
+
 
     private void markSelectedAsCompleted() {
         int selectedRow = eventTable.getSelectedRow();

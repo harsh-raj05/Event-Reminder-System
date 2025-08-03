@@ -13,8 +13,8 @@ public class ReminderManager{
         eventList=new ArrayList<>();
     }
 
-    public void addEvent(String title,String description,String date,String time){
-        Event e=new Event(title,description,date,time);
+    public void addEvent(String title,String description,String date,String time,int offset){
+        Event e=new Event(title,description,date,time,offset);
         eventList.add(e);
         System.out.println("Event added successfully.\n");
     }
@@ -92,30 +92,44 @@ public class ReminderManager{
         }
     }
 
-    public void loadFromFile(String filename){
-        try (BufferedReader br=new BufferedReader(new FileReader(filename))){
+    public void loadFromFile(String filename) {
+        try (BufferedReader br = new BufferedReader(new FileReader(filename))) {
             String line;
-            while ((line=br.readLine())!=null){
-                String[] parts=line.split(",",-1);
-                if (parts.length==5){
-                    Event e=new Event(parts[0],parts[1],parts[2],parts[3]);
-                    e.setStatus(parts[4]);
+            while ((line = br.readLine()) != null) {
+                String[] parts = line.split(",", -1);
+                if (parts.length == 6) {
+                    String title = parts[0];
+                    String description = parts[1];
+                    String date = parts[2];
+                    String time = parts[3];
+                    String status = parts[4];
+                    int offset = Integer.parseInt(parts[5]);
+
+                    Event e = new Event(title, description, date, time, offset);
+                    e.setStatus(status);
                     eventList.add(e);
                 }
             }
             System.out.println("Events loaded from file.");
-        } catch (IOException e){
+        } catch (IOException e) {
             System.out.println("No saved events found.");
+        } catch (NumberFormatException e) {
+            System.out.println("Error reading reminder offset from file.");
         }
     }
 
-    public void saveToFile(String filename){
-        try (PrintWriter pw=new PrintWriter(new FileWriter(filename))){
-            for (Event e:eventList){
-                pw.println(e.getTitle()+","+e.getDescription()+","+e.getDate()+","+e.getTime()+","+e.getStatus());
+    public void saveToFile(String filename) {
+        try (PrintWriter pw = new PrintWriter(new FileWriter(filename))) {
+            for (Event e : eventList) {
+                pw.println(e.getTitle() + "," +
+                        e.getDescription() + "," +
+                        e.getDate() + "," +
+                        e.getTime() + "," +
+                        e.getStatus() + "," +
+                        e.getReminderOffset());
             }
             System.out.println("Events saved to file.");
-        } catch (IOException e){
+        } catch (IOException e) {
             System.out.println("Error saving events.");
         }
     }

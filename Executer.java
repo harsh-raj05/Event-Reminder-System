@@ -33,7 +33,11 @@ public class Executer{
                     String date=sc.nextLine();
                     System.out.print("Enter time (HH:MM): ");
                     String time=sc.nextLine();
-                    manager.addEvent(title,desc,date,time);
+                    System.out.print("Remind how many days before the event? ");
+                    int offset = sc.nextInt();
+                    sc.nextLine(); 
+
+                    manager.addEvent(title, desc, date, time, offset);
                     break;
 
                 case 2:
