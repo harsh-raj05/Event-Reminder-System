@@ -5,7 +5,7 @@ import java.util.*;
 public class Executer{
     public static void main(String[] args){
         Scanner sc=new Scanner(System.in);
-        reminderManager manager=new reminderManager();
+        ReminderManager manager=new ReminderManager();
         manager.loadFromFile("events.csv");
         int choice;
 
@@ -15,7 +15,7 @@ public class Executer{
             System.out.println("2. View All Events");
             System.out.println("3. View Events by Date");
             System.out.println("4. Mark Event as Completed");
-            System.out.println("5. View Completed Events");
+            System.out.println("5. View Completed  Events");
             System.out.println("6. Update Event Status");
             System.out.println("7. Remove Event");
             System.out.println("8. Exit and save the file");
